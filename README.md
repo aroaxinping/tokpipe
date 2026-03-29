@@ -55,56 +55,139 @@ tokpipe follows a classic ETL pipeline structure:
 
 ---
 
-## Requirements
+## What you need
 
-- Python >= 3.10
-- Dependencies: pandas, openpyxl, matplotlib, seaborn, plotly, pyyaml
+### 1. Python
+
+Python 3.10 or higher. Check your version:
+
+```bash
+python --version
+# or
+python3 --version
+```
+
+If you don't have it, download from [python.org](https://www.python.org/downloads/) or install via your package manager:
+
+```bash
+# macOS (Homebrew)
+brew install python
+
+# Ubuntu/Debian
+sudo apt install python3 python3-venv python3-pip
+
+# Windows (winget)
+winget install Python.Python.3.12
+```
+
+### 2. Your TikTok data
+
+tokpipe works with the analytics files that TikTok lets you export. Here's how to get them:
+
+1. Open TikTok on desktop (not the app) or go to [tiktok.com](https://www.tiktok.com)
+2. Go to your profile > **Creator tools** > **Analytics**
+3. Select the date range you want to analyze
+4. Click **Export data** (top right) and download the XLSX or CSV file
+5. Save it somewhere you can find it (e.g., `~/Downloads/TikTok_Analytics.xlsx`)
+
+The export should have columns like: views, likes, comments, shares, and optionally watch time, video duration, and post date. tokpipe auto-detects column names in both English and Spanish.
+
+### 3. git (optional)
+
+Only needed if you want to clone the repo. You can also download the ZIP from GitHub.
+
+```bash
+git --version
+```
 
 ---
 
 ## Installation
 
 ```bash
+# Clone the repo
 git clone https://github.com/aroaxinping/tokpipe.git
 cd tokpipe
 
-python -m venv .venv
-source .venv/bin/activate
+# Create a virtual environment
+python3 -m venv .venv
 
+# Activate it
+source .venv/bin/activate        # macOS / Linux
+# .venv\Scripts\activate         # Windows (cmd)
+# .venv\Scripts\Activate.ps1     # Windows (PowerShell)
+
+# Install tokpipe and all its dependencies
 pip install -e .
+```
+
+This installs everything you need: pandas, openpyxl, matplotlib, seaborn, plotly, and pyyaml.
+
+To verify it worked:
+
+```bash
+tokpipe --version
+# tokpipe 0.1.0
 ```
 
 ---
 
 ## Usage
 
-### CLI (recommended)
+### Quick start
 
 ```bash
-# Basic run
-tokpipe analyze path/to/TikTok_Analytics.xlsx
+# Make sure your venv is active
+source .venv/bin/activate
 
-# Full run with all options
-tokpipe analyze path/to/TikTok_Analytics.xlsx \
+# Run the pipeline on your export file
+tokpipe analyze ~/Downloads/TikTok_Analytics.xlsx
+```
+
+That's it. It will create a `results/` folder with everything.
+
+### Output files
+
+```
+results/
+  report.csv           # Your data cleaned + engagement rate, completion rate, category
+  analytics.xlsx       # Excel with native formulas (open in Excel/Google Sheets)
+  dashboard.html       # Interactive dashboard (open in any browser)
+  engagement.png       # Engagement rate distribution chart
+  best_hours.png       # Which hours get the best engagement
+  growth.png           # How your views are trending over time
+```
+
+### All CLI options
+
+```bash
+tokpipe analyze <file> [options]
+```
+
+| Option | What it does | Example |
+|---|---|---|
+| `--output`, `-o` | Output directory (default: `results/`) | `--output my_report/` |
+| `--followers` | Your follower count (shown in reports) | `--followers 8728` |
+| `--period` | Label for the date range you're analyzing | `--period "24 Feb - 23 Mar 2026"` |
+| `--rules` | Path to YAML file with custom classification rules | `--rules my_rules.yaml` |
+| `--no-charts` | Skip PNG chart generation | |
+| `--no-dashboard` | Skip HTML dashboard generation | |
+| `--no-excel` | Skip Excel report generation | |
+
+### Full example
+
+```bash
+tokpipe analyze TikTok_Analytics.xlsx \
   --output results/ \
   --followers 8728 \
   --period "24 Feb - 23 Mar 2026" \
-  --rules my_rules.yaml
-
-# Skip specific outputs
-tokpipe analyze data.csv --no-dashboard --no-excel
-tokpipe analyze data.csv --no-charts
+  --rules rules.yaml
 ```
 
-This generates:
-```
-results/
-  report.csv           # Clean data + computed metrics
-  analytics.xlsx       # Excel with formulas and charts
-  dashboard.html       # Interactive Plotly dashboard (open in browser)
-  engagement.png       # Engagement rate distribution
-  best_hours.png       # Best posting hours chart
-  growth.png           # Growth trend chart
+### Only want the CSV?
+
+```bash
+tokpipe analyze data.xlsx --no-dashboard --no-excel --no-charts
 ```
 
 ### Python API
