@@ -182,6 +182,14 @@ tokpipe --version
 
 ## Usage
 
+### Try it with sample data
+
+Don't have a TikTok export yet? Use the included sample:
+
+```bash
+tokpipe analyze examples/sample_data.csv --output sample_results/
+```
+
 ### Quick start
 
 ```bash
@@ -342,25 +350,32 @@ See [sql/queries.sql](sql/queries.sql) for the full set.
 
 ```
 tokpipe/
+  .github/
+    workflows/
+      ci.yml              # GitHub Actions CI (tests on Python 3.10-3.13)
+    ISSUE_TEMPLATE/
+      bug_report.md       # Bug report template
+      feature_request.md  # Feature request template
   src/
     tokpipe/
-      __init__.py       # Package init, version
-      cli.py            # Command-line interface
-      ingest.py         # Load TikTok exports
-      clean.py          # Normalize and clean data
-      classify.py       # Content classifier (YAML / custom function)
-      metrics.py        # Compute derived metrics
-      output.py         # CSV/JSON export + matplotlib charts
-      excel.py          # Excel report with formulas
-      dashboard.py      # Interactive Plotly HTML dashboard
+      __init__.py         # Package init, version
+      cli.py              # Command-line interface
+      ingest.py           # Load TikTok exports
+      clean.py            # Normalize and clean data
+      classify.py         # Content classifier (YAML / custom function)
+      metrics.py          # Compute derived metrics
+      output.py           # CSV/JSON export + matplotlib charts
+      excel.py            # Excel report with formulas
+      dashboard.py        # Interactive Plotly HTML dashboard
   tests/
     test_ingest.py
     test_clean.py
     test_metrics.py
   sql/
-    queries.sql         # Reference SQL queries
+    queries.sql           # Reference SQL queries
   examples/
-    basic_analysis.py   # Minimal working example
+    basic_analysis.py     # Minimal working example
+    sample_data.csv       # Fake data to test without a TikTok account
   pyproject.toml
   LICENSE
   CONTRIBUTING.md
