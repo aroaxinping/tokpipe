@@ -35,6 +35,10 @@ tokpipe analyze TikTok_Analytics.xlsx --followers 8728
 | `best_hours.png` | Which hours get the best engagement |
 | `growth.png` | 7-day rolling average of your views |
 
+### Dashboard preview
+
+![tokpipe dashboard](docs/dashboard_screenshot.png)
+
 ---
 
 ## Architecture

@@ -23,3 +23,4 @@ Thumbs.db
 # Output
 results/
 *.png
+!docs/*.png
