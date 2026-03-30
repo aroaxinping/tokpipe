@@ -369,6 +369,58 @@ tokpipe/
 
 ---
 
+## Troubleshooting
+
+### `ModuleNotFoundError: No module named 'tokpipe'`
+
+Your virtual environment is not activated. Run:
+
+```bash
+source .venv/bin/activate        # macOS / Linux
+.venv\Scripts\activate           # Windows
+```
+
+### `ModuleNotFoundError: No module named 'pandas'`
+
+Dependencies are not installed. Run:
+
+```bash
+pip install -e .
+```
+
+### `ValueError: Could not find a 'views' column`
+
+tokpipe couldn't match any column in your export to "views". This happens when the export uses a language tokpipe doesn't recognize yet. Open your file, check the column name for views, and [open an issue](https://github.com/aroaxinping/tokpipe/issues/new) with the column names so we can add support.
+
+### `FileNotFoundError: File not found`
+
+Check that the path to your export file is correct. Use the full path:
+
+```bash
+tokpipe analyze /Users/you/Downloads/TikTok_Analytics.xlsx
+```
+
+### Charts are not generated
+
+If you see `-- Skipping best hours` or `-- Skipping growth trend`, your export file doesn't have a date/time column. tokpipe needs a column with post dates to generate time-based charts. The engagement distribution chart will still work.
+
+### `pip install -e .` fails
+
+If you're on Python 3.14+, try installing without editable mode:
+
+```bash
+pip install .
+```
+
+Or install dependencies manually and run with PYTHONPATH:
+
+```bash
+pip install pandas openpyxl matplotlib seaborn plotly pyyaml
+PYTHONPATH=src tokpipe analyze data.xlsx
+```
+
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
