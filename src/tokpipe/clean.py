@@ -28,10 +28,15 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
         .str.replace(r"[^\w]", "_", regex=True)
     )
 
-    # Try to convert date-like columns
+    # Try to convert date-like columns (skip if already numeric)
     for col in df.columns:
         if any(keyword in col for keyword in ("date", "time", "created", "posted")):
-            df[col] = pd.to_datetime(df[col], errors="coerce")
+            if pd.api.types.is_numeric_dtype(df[col]):
+                continue
+            converted = pd.to_datetime(df[col], errors="coerce")
+            # Only convert if at least half the values parsed as dates
+            if converted.notna().sum() > len(converted) / 2:
+                df[col] = converted
 
     # Try to convert numeric-like string columns
     for col in df.select_dtypes(include="object").columns:
