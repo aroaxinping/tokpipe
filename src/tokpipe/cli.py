@@ -35,13 +35,23 @@ def main():
         "--period",
         type=str,
         default=None,
-        help='Analysis period label, e.g. "24 Feb - 23 Mar 2026".',
+        help='Analysis period label, e.g. "24 Feb - 31 Mar 2026".',
     )
     analyze.add_argument(
         "--rules",
         type=str,
         default=None,
         help="Path to YAML file with classification rules.",
+    )
+    analyze.add_argument(
+        "--timing",
+        action="store_true",
+        help="Run timing analysis — performance breakdown by day of week.",
+    )
+    analyze.add_argument(
+        "--hashtags",
+        action="store_true",
+        help="Run hashtag analysis — frequency and ER per hashtag.",
     )
     analyze.add_argument(
         "--no-charts",
@@ -70,7 +80,7 @@ def main():
 
 
 def run_analyze(args):
-    from tokpipe import excel, dashboard, classify
+    from tokpipe import excel, dashboard, classify, timing, hashtag
 
     out_dir = Path(args.output)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -123,6 +133,30 @@ def run_analyze(args):
             print(f"  -> {out_dir / 'growth.png'}")
         except ValueError:
             print("  -- Skipping growth trend (no date data)")
+
+    # Timing analysis
+    if args.timing:
+        print("\nRunning timing analysis...")
+        try:
+            tr = timing.analyse(report)
+            print(tr.summary())
+            timing_path = out_dir / "timing.csv"
+            tr.by_day.to_csv(timing_path)
+            print(f"Timing report exported to {timing_path}")
+        except ValueError as e:
+            print(f"  -- Skipping timing analysis: {e}")
+
+    # Hashtag analysis
+    if args.hashtags:
+        print("\nRunning hashtag analysis...")
+        try:
+            hr = hashtag.analyse(report)
+            print(hr.summary())
+            hashtag_path = out_dir / "hashtags.csv"
+            hr.table.to_csv(hashtag_path, index=False)
+            print(f"Hashtag report exported to {hashtag_path}")
+        except ValueError as e:
+            print(f"  -- Skipping hashtag analysis: {e}")
 
     # Dashboard (HTML)
     if not args.no_dashboard:
