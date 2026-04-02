@@ -46,6 +46,12 @@ def _make_report(*, with_dates=False, with_growth=False):
         report = Report(
             data=report.data,
             engagement_rate=report.engagement_rate,
+            like_rate=report.like_rate,
+            comment_rate=report.comment_rate,
+            share_rate=report.share_rate,
+            save_rate=report.save_rate,
+            virality_score=report.virality_score,
+            views_per_day=report.views_per_day,
             avg_watch_time=report.avg_watch_time,
             completion_rate=report.completion_rate,
             best_hour=report.best_hour,
