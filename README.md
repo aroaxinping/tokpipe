@@ -55,11 +55,13 @@ tokpipe follows a classic ETL pipeline structure:
 
 ---
 
-## What you need
+## Prerequisites
 
-### 1. Python
+You need two things before installing tokpipe:
 
-Python 3.10 or higher. Check your version:
+### Python 3.10+
+
+Check your version:
 
 ```bash
 python --version
@@ -67,7 +69,7 @@ python --version
 python3 --version
 ```
 
-If you don't have it, download from [python.org](https://www.python.org/downloads/) or install via your package manager:
+If you don't have it:
 
 ```bash
 # macOS (Homebrew)
@@ -80,25 +82,40 @@ sudo apt install python3 python3-venv python3-pip
 winget install Python.Python.3.12
 ```
 
-### 2. Your TikTok data
+Or download directly from [python.org](https://www.python.org/downloads/).
 
-tokpipe works with the analytics files that TikTok lets you export. Here's how to get them:
+### git (optional)
 
-1. Open TikTok on desktop (not the app) or go to [tiktok.com](https://www.tiktok.com)
-2. Go to your profile > **Creator tools** > **Analytics**
-3. Select the date range you want to analyze
-4. Click **Export data** (top right) and download the XLSX or CSV file
-5. Save it somewhere you can find it (e.g., `~/Downloads/TikTok_Analytics.xlsx`)
-
-The export should have columns like: views, likes, comments, shares, and optionally watch time, video duration, and post date. tokpipe auto-detects column names in both English and Spanish.
-
-### 3. git (optional)
-
-Only needed if you want to clone the repo. You can also download the ZIP from GitHub.
+Only needed to clone the repo. You can also [download the ZIP](https://github.com/aroaxinping/tokpipe/archive/refs/heads/main.zip) from GitHub.
 
 ```bash
 git --version
 ```
+
+---
+
+## Get your TikTok data
+
+tokpipe works with the analytics files that TikTok lets you export. No API keys, no scraping — just the file TikTok gives you.
+
+**How to export:**
+
+1. Open TikTok on **desktop** (not the app) or go to [tiktok.com](https://www.tiktok.com)
+2. Go to your profile > **Creator tools** > **Analytics**
+3. Select the date range you want to analyze
+4. Click **Export data** (top right)
+5. Download the XLSX or CSV file
+
+**What the file should contain:**
+
+| Required columns | Optional columns |
+|---|---|
+| Views | Watch time |
+| Likes | Video duration |
+| Comments | Post date/time |
+| Shares | Caption/description |
+
+tokpipe auto-detects column names in both English and Spanish. If your export uses different names, the pipeline will try to match them — if it can't find a `views` column, it will tell you.
 
 ---
 
@@ -121,9 +138,9 @@ source .venv/bin/activate        # macOS / Linux
 pip install -e .
 ```
 
-This installs everything you need: pandas, openpyxl, matplotlib, seaborn, plotly, and pyyaml.
+This installs: pandas, openpyxl, matplotlib, seaborn, plotly, and pyyaml.
 
-To verify it worked:
+Verify it worked:
 
 ```bash
 tokpipe --version
