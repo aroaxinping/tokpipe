@@ -1,8 +1,39 @@
 # tokpipe
 
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Tests](https://github.com/aroaxinping/tokpipe/actions/workflows/ci.yml/badge.svg)](https://github.com/aroaxinping/tokpipe/actions/workflows/ci.yml)
+
 Data pipeline for TikTok analytics. Import your exported data, clean it, classify content, compute real metrics, and visualize what actually works.
 
 No APIs, no scraping, no third-party tokens. Just your TikTok export files (CSV/XLSX) and Python.
+
+---
+
+## Why tokpipe?
+
+TikTok gives you a spreadsheet with raw numbers. That's it. No insights, no trends, no "why did this video work?".
+
+tokpipe takes that file and builds a full analytics pipeline: cleans the data, classifies your content by topic, computes real metrics (engagement rate, best posting hour, growth trends), and generates an interactive dashboard, an Excel report with formulas, and static charts. One command, all outputs.
+
+It's built for creators who want to understand their data without depending on third-party tools that ask for your credentials.
+
+---
+
+## What you get
+
+```bash
+tokpipe analyze TikTok_Analytics.xlsx --followers 8728
+```
+
+| Output | What it is |
+|---|---|
+| `report.csv` | Your data cleaned + engagement rate, completion rate, category per video |
+| `analytics.xlsx` | Excel with native formulas — open in Excel or Google Sheets |
+| `dashboard.html` | Interactive Plotly dashboard — open in any browser, hover for details |
+| `engagement.png` | Engagement rate distribution across all your videos |
+| `best_hours.png` | Which hours get the best engagement |
+| `growth.png` | 7-day rolling average of your views |
 
 ---
 
