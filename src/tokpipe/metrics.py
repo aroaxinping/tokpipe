@@ -45,7 +45,16 @@ class Report:
 
 
 def _find_column(df: pd.DataFrame, candidates: list[str]) -> str | None:
-    """Return the first column whose name contains any of the candidate strings."""
+    """Return the first column matching any of the candidate strings.
+
+    Prefers exact matches over substring matches to avoid false positives
+    (e.g. 'views' should not match 'views_per_day' or 'avg_view_sec').
+    """
+    # Pass 1: exact match
+    for candidate in candidates:
+        if candidate in df.columns:
+            return candidate
+    # Pass 2: substring fallback (for localised / prefixed column names)
     for candidate in candidates:
         for col in df.columns:
             if candidate in col:
