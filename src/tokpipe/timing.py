@@ -62,7 +62,7 @@ def analyse(report: Report, date_column: str = "published_date") -> TimingReport
             )
         date_column = candidates[0]
 
-    dates = pd.to_datetime(df[date_column], errors="coerce")
+    dates = pd.to_datetime(df[date_column], format="ISO8601", errors="coerce")
     if dates.isna().all():
         raise ValueError(f"Column '{date_column}' contains no parseable dates.")
 
