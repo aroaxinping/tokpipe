@@ -135,12 +135,12 @@ def compute(df: pd.DataFrame, reference_date: date | None = None) -> Report:
     # Growth trend: 7-day rolling avg of views (requires date column)
     growth_trend = None
     if dates is not None and dates.notna().any():
-            daily = (
-                pd.DataFrame({"date": dates.dt.date, "views": views})
-                .groupby("date")["views"].sum()
-                .sort_index()
-            )
-            growth_trend = daily.rolling(7, min_periods=1).mean()
+        daily = (
+            pd.DataFrame({"date": dates.dt.date, "views": views})
+            .groupby("date")["views"].sum()
+            .sort_index()
+        )
+        growth_trend = daily.rolling(7, min_periods=1).mean()
 
     # Top performers: above 90th percentile engagement
     threshold = engagement_rate.quantile(0.9)
