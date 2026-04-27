@@ -101,17 +101,20 @@ def compute(df: pd.DataFrame, reference_date: date | None = None) -> Report:
     share_rate      = (shares   / safe_views).fillna(0)
     save_rate       = (saves    / safe_views).fillna(0) if saves is not None else None
 
+    # Parse dates once — reused for virality, best_hour, and growth_trend
+    dates = None
+    if date_col is not None:
+        dates = pd.to_datetime(df[date_col], format="ISO8601", errors="coerce")
+
     # Virality score: log(views/day) × engagement_rate
     views_per_day = None
     virality_score = share_rate.copy()  # fallback: just share rate
-    if date_col is not None:
-        dates = pd.to_datetime(df[date_col], errors="coerce")
-        if dates.notna().any():
-            days = (pd.Timestamp(reference_date) - dates).dt.days.clip(lower=1)
-            views_per_day = (views / days).round(0)
-            virality_score = (
-                np.log1p(views_per_day.fillna(0)) * engagement_rate
-            ).round(4)
+    if dates is not None and dates.notna().any():
+        days = (pd.Timestamp(reference_date) - dates).dt.days.clip(lower=1)
+        views_per_day = (views / days).round(0)
+        virality_score = (
+            np.log1p(views_per_day.fillna(0)) * engagement_rate
+        ).round(4)
 
     # Average watch time
     avg_watch_time = df[watch_col] if watch_col else None
@@ -124,17 +127,14 @@ def compute(df: pd.DataFrame, reference_date: date | None = None) -> Report:
 
     # Best posting hour
     best_hour = None
-    if date_col:
-        dates = pd.to_datetime(df[date_col], errors="coerce")
+    if dates is not None:
         if pd.api.types.is_datetime64_any_dtype(dates) and dates.dt.hour.notna().any():
             hour_er = pd.DataFrame({"hour": dates.dt.hour, "er": engagement_rate})
             best_hour = int(hour_er.groupby("hour")["er"].median().idxmax())
 
     # Growth trend: 7-day rolling avg of views (requires date column)
     growth_trend = None
-    if date_col:
-        dates = pd.to_datetime(df[date_col], errors="coerce")
-        if dates.notna().any():
+    if dates is not None and dates.notna().any():
             daily = (
                 pd.DataFrame({"date": dates.dt.date, "views": views})
                 .groupby("date")["views"].sum()
