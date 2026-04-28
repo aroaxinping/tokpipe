@@ -39,7 +39,7 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
                 df[col] = converted
 
     # Try to convert numeric-like string columns
-    for col in df.select_dtypes(include=["object", "str"]).columns:
+    for col in df.select_dtypes(include="object").columns:
         try:
             converted = pd.to_numeric(df[col].str.replace(",", ""), errors="coerce")
             # Only convert if at least half the values parsed successfully
