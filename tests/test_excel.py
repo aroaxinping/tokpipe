@@ -17,13 +17,24 @@ def _make_report(n_rows=5):
         "shares": [5, 15, 2, 4, 10][:n_rows],
     })
     views = df["views"]
-    engagement_rate = (df["likes"] + df["comments"] + df["shares"]) / views
+    safe_views = views.replace(0, pd.NA).astype(float)
+    engagement_rate = (df["likes"] + df["comments"] + df["shares"]) / safe_views
+    engagement_rate = engagement_rate.fillna(0)
+    like_rate = (df["likes"] / safe_views).fillna(0)
+    comment_rate = (df["comments"] / safe_views).fillna(0)
+    share_rate = (df["shares"] / safe_views).fillna(0)
     threshold = engagement_rate.quantile(0.9)
     top_performers = df[engagement_rate >= threshold].copy()
 
     return Report(
         data=df,
         engagement_rate=engagement_rate,
+        like_rate=like_rate,
+        comment_rate=comment_rate,
+        share_rate=share_rate,
+        save_rate=None,
+        virality_score=share_rate.copy(),
+        views_per_day=None,
         avg_watch_time=None,
         completion_rate=None,
         best_hour=14,
