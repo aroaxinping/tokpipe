@@ -1,5 +1,6 @@
 """Load TikTok export files (XLSX, CSV) into raw DataFrames."""
 
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -25,16 +26,19 @@ _CONTENT_EXPORT_COLS = {
 }
 
 
-def _parse_spanish_date(value: str, year: int = 2026) -> str | None:
+def _parse_spanish_date(value: str, year: int | None = None) -> str | None:
     """Parse a Spanish date string like '28 de febrero' into 'YYYY-MM-DD'.
 
     Args:
         value: Date string from TikTok Studio export.
-        year: Year to use when not present in the string. Default: 2026.
+        year: Year to use when not present in the string.
+              Defaults to the current year so no manual update is needed.
 
     Returns:
         ISO date string or None if parsing fails.
     """
+    if year is None:
+        year = date.today().year
     s = str(value).strip().lower()
     for month_name, month_num in _ES_MONTHS.items():
         if month_name in s:

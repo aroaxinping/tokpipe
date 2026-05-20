@@ -1,10 +1,14 @@
 """Tests for tokpipe.ingest module."""
 
+from datetime import date
+
 import pytest
 import pandas as pd
 from pathlib import Path
 
 from tokpipe.ingest import load, _parse_spanish_date, _is_content_export, _normalise_content_export
+
+THIS_YEAR = date.today().year
 
 
 def test_load_file_not_found():
@@ -37,22 +41,23 @@ def test_load_accepts_path_object(tmp_path):
 # --- _parse_spanish_date ---
 
 def test_parse_spanish_date_basic():
-    assert _parse_spanish_date("28 de febrero") == "2026-02-28"
+    assert _parse_spanish_date("28 de febrero") == f"{THIS_YEAR}-02-28"
 
 
 def test_parse_spanish_date_all_months():
+    y = THIS_YEAR
     cases = {
-        "1 de enero": "2026-01-01",
-        "15 de marzo": "2026-03-15",
-        "30 de abril": "2026-04-30",
-        "5 de mayo": "2026-05-05",
-        "10 de junio": "2026-06-10",
-        "20 de julio": "2026-07-20",
-        "8 de agosto": "2026-08-08",
-        "3 de septiembre": "2026-09-03",
-        "12 de octubre": "2026-10-12",
-        "22 de noviembre": "2026-11-22",
-        "31 de diciembre": "2026-12-31",
+        "1 de enero":       f"{y}-01-01",
+        "15 de marzo":      f"{y}-03-15",
+        "30 de abril":      f"{y}-04-30",
+        "5 de mayo":        f"{y}-05-05",
+        "10 de junio":      f"{y}-06-10",
+        "20 de julio":      f"{y}-07-20",
+        "8 de agosto":      f"{y}-08-08",
+        "3 de septiembre":  f"{y}-09-03",
+        "12 de octubre":    f"{y}-10-12",
+        "22 de noviembre":  f"{y}-11-22",
+        "31 de diciembre":  f"{y}-12-31",
     }
     for text, expected in cases.items():
         assert _parse_spanish_date(text) == expected, f"Failed for: {text}"
@@ -63,7 +68,7 @@ def test_parse_spanish_date_custom_year():
 
 
 def test_parse_spanish_date_zero_pads_day():
-    assert _parse_spanish_date("5 de abril") == "2026-04-05"
+    assert _parse_spanish_date("5 de abril") == f"{THIS_YEAR}-04-05"
 
 
 def test_parse_spanish_date_unrecognised_returns_none():
@@ -119,8 +124,8 @@ def test_normalise_content_export_parses_dates():
         "Total shares": [0, 1],
     })
     out = _normalise_content_export(df)
-    assert out["published_date"].iloc[0] == "2026-01-05"
-    assert out["published_date"].iloc[1] == "2026-03-20"
+    assert out["published_date"].iloc[0] == f"{THIS_YEAR}-01-05"
+    assert out["published_date"].iloc[1] == f"{THIS_YEAR}-03-20"
 
 
 def test_normalise_content_export_numeric_columns():
@@ -166,5 +171,5 @@ def test_load_content_export_csv(tmp_path):
     assert "title" in df.columns
     assert "published_date" in df.columns
     assert df["views"].iloc[0] == 1000
-    assert df["published_date"].iloc[0] == "2026-02-10"
+    assert df["published_date"].iloc[0] == f"{THIS_YEAR}-02-10"
     assert len(df) == 2
