@@ -2,6 +2,13 @@
 
 All notable changes to tokpipe will be documented in this file.
 
+## [0.2.1] - 2026-04-16
+
+### Fixed
+
+- `ingest._parse_spanish_date`: year parameter now defaults to `date.today().year` instead of hardcoded `2026` — without this fix, all date parsing would silently produce wrong years from January 2027 onwards.
+- `tests/test_ingest.py`: updated hardcoded `"2026-..."` date assertions to use `date.today().year` so the test suite stays correct in future years.
+
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
