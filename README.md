@@ -3,6 +3,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Tests](https://github.com/aroaxinping/tokpipe/actions/workflows/ci.yml/badge.svg)](https://github.com/aroaxinping/tokpipe/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/aroaxinping/tokpipe/branch/main/graph/badge.svg)](https://codecov.io/gh/aroaxinping/tokpipe)
 
 Data pipeline for TikTok analytics. Import your exported data, clean it, classify content, compute real metrics, and visualize what actually works.
 
